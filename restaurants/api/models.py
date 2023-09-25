@@ -23,7 +23,7 @@ class RestaurantPizza(db.Model):
     
     def __str__(self):
         return self.pizza_id
-
+ 
 class Pizza(db.Model):
     __tablename__ = 'pizzas'
     id = db.Column(db.Integer, primary_key=True)

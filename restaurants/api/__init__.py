@@ -1,7 +1,7 @@
 #creating instance of the application in init.py
 
 from flask import Flask
-from flask_restful import Api # to convert the app into restful api
+from flask_restful import Api # to convert the app into restful api 
 from api.models import db
 
 app = Flask(__name__)
