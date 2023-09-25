@@ -39,6 +39,7 @@ Set up the following routes. Make sure to return JSON data in the format specifi
 Return JSON data in the format below:
 
 [
+
   {
 
     "id": 1,
@@ -116,7 +117,9 @@ After deleting the Restaurant, return an empty response body, along with the app
 If the Restaurant does not exist, return the following JSON data, along with the appropriate HTTP status code:
 
 {
+
   "error": "Restaurant not found"
+  
 }
 
 <h3>GET /pizzas</h3>
@@ -178,7 +181,7 @@ If the RestaurantPizza is not created successfully, return the following JSON da
 {
 
   "errors": ["validation errors"]
-  
+
 }
 
 <h2>Languages</h2>
