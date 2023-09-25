@@ -6,29 +6,29 @@ Your job is to build out the Flask API to add the functionality described in the
 
 Test you endpoints as stated below:
 
- - Running the Flask server and using Postman to make requests
+- Running the Flask server and using Postman to make requests
 
 <h2>Models</h2>
 
 You need to create the following relationships:
 
-    - A Restaurant has many Pizzas through RestaurantPizza
+- A Restaurant has many Pizzas through RestaurantPizza
 
-    - A Pizza has many Restaurants through RestaurantPizza
+- A Pizza has many Restaurants through RestaurantPizza
 
-    - A RestaurantPizza belongs to a Restaurant and belongs to a Pizza
+- A RestaurantPizza belongs to a Restaurant and belongs to a Pizza
 
 <h2>Validations</h2>
 
 Add validations to the RestaurantPizza model:
 
-    - must have a price between 1 and 30
+- must have a price between 1 and 30
 
 Add validations to Restaurant Model:
 
-    - must have a name less than 50 words in length
+- must have a name less than 50 words in length
 
-    - must have a unique name
+- must have a unique name
 
 <h2>Routes</h2>
 
@@ -40,15 +40,25 @@ Return JSON data in the format below:
 
 [
   {
+
     "id": 1,
+
     "name": "Dominion Pizza",
+
     "address": "Good Italian, Ngong Road, 5th Avenue"
+
   },
+
   {
+
     "id": 2,
+
     "name": "Pizza Hut",
+
     "address": "Westgate Mall, Mwanzi Road, Nrb 100"
+
   }
+
 ]
 
 <h3>GET /restaurants/:id</h3>
@@ -56,27 +66,45 @@ Return JSON data in the format below:
 If the Restaurant exists, return JSON data in the format below:
 
 {
+
   "id": 1,
+
   "name": "Dominion Pizza",
+
   "address": "Good Italian, Ngong Road, 5th Avenue",
+
   "pizzas": [
+
     {
+
       "id": 1,
+
       "name": "Cheese",
+
       "ingredients": "Dough, Tomato Sauce, Cheese"
+
     },
+
     {
+
       "id": 2,
+
       "name": "Pepperoni",
+
       "ingredients": "Dough, Tomato Sauce, Cheese, Pepperoni"
+
     }
+
   ]
+
 }
 
 If the Restaurant does not exist, return the following JSON data, along with the appropriate HTTP status code:
 
 {
+
   "error": "Restaurant not found"
+
 }
 
 <h3>DELETE /restaurants/:id</h3>
@@ -96,16 +124,27 @@ If the Restaurant does not exist, return the following JSON data, along with the
 Return JSON data in the format below:
 
 [
+
   {
+
     "id": 1,
+
     "name": "Cheese",
+
     "ingredients": "Dough, Tomato Sauce, Cheese"
+
   },
+
   {
+
     "id": 2,
+
     "name": "Pepperoni",
+
     "ingredients": "Dough, Tomato Sauce, Cheese, Pepperoni"
+
   }
+
 ]
 
 <h3>POST /restaurant_pizzas</h3>
@@ -113,21 +152,33 @@ Return JSON data in the format below:
 This route should create a new RestaurantPizza that is associated with an existing Pizza and Restaurant. It should accept an object with the following properties in the body of the request:
 
 {
+
   "price": 5,
+
   "pizza_id": 1,
+
   "restaurant_id": 3
+
 }
+
 If the RestaurantPizza is created successfully, send back a response with the data related to the Pizza:
 
 {
+
   "id": 1,
+
   "name": "Cheese",
+
   "ingredients": "Dough, Tomato Sauce, Cheese"
+
 }
+
 If the RestaurantPizza is not created successfully, return the following JSON data, along with the appropriate HTTP status code:
 
 {
+
   "errors": ["validation errors"]
+  
 }
 
 <h2>Languages</h2>
