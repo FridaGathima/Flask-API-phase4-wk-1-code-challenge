@@ -29,6 +29,7 @@ def response_serializer(restaurantpizzas: RestaurantPizza):
     for restaurantpizza in restaurantpizzas:
         resstaurantpizza_dict = {
             "id":restaurantpizza.id,
+            "price":restaurantpizza.price,
             "pizza_id":restaurantpizza.pizza_id,
             "restaurant_id":restaurantpizza.restaurant_id,
             "created_at":str(restaurantpizza.created_at),

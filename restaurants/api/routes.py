@@ -1,5 +1,6 @@
 from api import db, api
 from flask_restful import Resource, reqparse
+from flask import request
 from .models import db, Restaurant, Pizza, RestaurantPizza
 from .serializer import response_serializer
 from .serializer import response_serializer1
@@ -36,25 +37,38 @@ class PizzaList(Resource):
         response = response_serializer1(pizzas) 
         return response, 200
     
-class RestaurantPizzaPost(Resource):
+class RestaurantPizzaResource(Resource):
     def get(self):
         restaurantpizzas = RestaurantPizza.query.all()
         response = response_serializer(restaurantpizzas)
         return response, 200
 
     def post(self): 
-        data = parser.parse_args()
-        created_date = datetime.strptime(data["created_at"], "%d/%m/%y")
-        updated_date = datetime.strptime(data["updated_at"], "%d/%m/%y")
-        data["created_at"] = created_date
-        data["updated_at"] = updated_date
-        new_data = RestaurantPizza(**data)
-        db.session.add(new_data)
-        db.session.commit()
-        data["created_at"] = str(created_date)
-        data["updated_at"] = str(updated_date)
+        try:
+            data = request.get_json()
+            rp = RestaurantPizza(
+                price=data["price"],
+                pizza_id=data["pizza_id"],
+                restaurant_id=data["restaurant_id"]
+            )
+            db.session.add(rp)
+            db.session.commit()
+            pizza = Pizza.query.filter_by(id=data["pizza_id"]).first()
+            pizza_dict = {
+                "id": pizza.id,
+                "name": pizza.name,
+                "ingredients": pizza.ingredients
+            }
 
-        return data, 201
+            response = make_response(jsonify(pizza_dict), 201)
+
+            return response
+        except ValueError as e:
+            response = make_response(jsonify({"errors": e.args}), 400)
+            return response
+        except Exception as e:
+            response = make_response(jsonify({"errors": e.args}), 400)
+            return response
 
 
         # new_data = RestaurantPizzaPost(**data)
@@ -84,8 +98,8 @@ class RestaurantId(Resource):
         else:
             return make_response(jsonify({"error": "Restaurant not found"}), 404 ) 
 
-    
+        
 api.add_resource(RestaurantList, "/restaurants") 
 api.add_resource(PizzaList, "/pizzas")
-api.add_resource(RestaurantPizzaPost, "/restaurant_pizzas")
+api.add_resource(RestaurantPizzaResource, "/restaurant_pizzas")
 api.add_resource(RestaurantId, '/restaurants/<int:id>')
