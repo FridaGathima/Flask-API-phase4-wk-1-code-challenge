@@ -1,8 +1,13 @@
 from api import db, api
 from flask_restful import Resource, reqparse
-from .models import Restaurant, Pizza, RestaurantPizza
+from .models import db, Restaurant, Pizza, RestaurantPizza
 from .serializer import response_serializer
-from datetime import datetime 
+from .serializer import response_serializer1
+from .serializer import response_serializer2
+
+
+from datetime import datetime
+from flask import make_response, jsonify
 
 parser = reqparse.RequestParser()
 parser.add_argument('pizza_id')
@@ -10,17 +15,25 @@ parser.add_argument('restaurant_id')
 parser.add_argument('price')
 parser.add_argument('created_at')
 parser.add_argument('updated_at')
+class Index(Resource):
+    def get(self):
+        response = {
+            "index": "Welcome to my RestFull API"}
+
+        return  make_response (jsonify(response))
+api.add_resource(Index, '/')    
 
 class RestaurantList(Resource):
+  
     def get(self):
         restaurants = Restaurant.query.all()
-        response = response_serializer(restaurants) # to convert the data to JSON format
-        return response, 200 
+        response = response_serializer2(restaurants)
+        return make_response(jsonify(response), 200 )
     
 class PizzaList(Resource):
     def get(self):
         pizzas = Pizza.query.all()
-        response = response_serializer(pizzas) 
+        response = response_serializer1(pizzas) 
         return response, 200
     
 class RestaurantPizzaPost(Resource):

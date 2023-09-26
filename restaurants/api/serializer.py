@@ -1,6 +1,6 @@
 from .models import Restaurant, Pizza, RestaurantPizza
 
-def response_serializer(restaurants: Restaurant):
+def response_serializer2(restaurants: Restaurant):
     response = []
     for restaurant in restaurants:
         restaurant_dict = {
@@ -11,7 +11,7 @@ def response_serializer(restaurants: Restaurant):
         response.append(restaurant_dict)
     return response
  
-def response_serializer(pizzas: Pizza):
+def response_serializer1(pizzas: Pizza):
     response_pizza = []
     for pizza in pizzas:
         pizza_dict = {
