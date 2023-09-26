@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
@@ -7,11 +8,20 @@ db = SQLAlchemy()
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = 'restaurants'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String(50), unique=True)
     address = db.Column(db.String)
-    restaurant_pizza = db.relationship(
-        "RestaurantPizza",  backref="restaurants"
+    pizzas = db.relationship(
+         "Pizza", secondary="restaurant_pizzas",  back_populates="restaurants"
     )
+
+    @validates("name")
+    def validate_name(self, key, name):
+        if not len(name.strip().split(" ")) < 50:
+            raise ValueError("Must have a name less than 50 words in length")
+        restaurant = Restaurant.query.filter_by(name=name).first()
+        if restaurant:
+            raise ValueError("Name value must be unique")
+        return name
 
  
 
@@ -27,7 +37,12 @@ class RestaurantPizza(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-
+    @validates("price")
+    def validate_price(self, key, price):
+        if isinstance(price, int) and (price >= 1 and price <= 30):
+            return price
+        else:
+            raise ValueError("Must have a price between 1 and 30")
 
 
     def response_serializer(self):
@@ -49,8 +64,8 @@ class Pizza(db.Model, SerializerMixin):
     ingredients = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
-    restaurant_pizza = db.relationship(
-        "RestaurantPizza", backref="pizzas"
+    restaurants = db.relationship(
+         "Restaurant", secondary="restaurant_pizzas",  back_populates="pizzas"
     )
     def response_serializer(self):
         return {

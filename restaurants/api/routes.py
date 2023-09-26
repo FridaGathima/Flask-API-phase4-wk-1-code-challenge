@@ -7,7 +7,7 @@ from .serializer import response_serializer2
 
 
 from datetime import datetime
-from flask import make_response, jsonify
+from flask import app, make_response, jsonify
 
 parser = reqparse.RequestParser()
 parser.add_argument('pizza_id')
@@ -59,7 +59,33 @@ class RestaurantPizzaPost(Resource):
 
         # new_data = RestaurantPizzaPost(**data)
 
+
+class RestaurantId(Resource):
+    def get(self, id):
+        restaurant = Restaurant.query.filter_by(id=id).first()
+        if restaurant:
+            pizzas = [{"id": pizza.id, "name": pizza.name, "ingredients": pizza.ingredients} for pizza in restaurant.pizzas]
+            response = {
+                "id":restaurant.id,
+                "name":restaurant.name,
+                "address":restaurant.address,
+                "pizzas": pizzas
+            }
+            return make_response(jsonify(response), 200 )
+        else: 
+            return make_response(jsonify({"error": "Restaurant not found"}), 404 ) 
+    def delete(self, id):
+        restaurant = Restaurant.query.filter_by(id=id).first()
+        if restaurant:
+            RestaurantPizza.query.filter_by(restaurant_id=id).delete()
+            db.session.delete(restaurant)
+            db.session.commit()
+            return make_response("", 204 )
+        else:
+            return make_response(jsonify({"error": "Restaurant not found"}), 404 ) 
+
     
 api.add_resource(RestaurantList, "/restaurants") 
 api.add_resource(PizzaList, "/pizzas")
 api.add_resource(RestaurantPizzaPost, "/restaurant_pizzas")
+api.add_resource(RestaurantId, '/restaurants/<int:id>')
